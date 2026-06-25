@@ -87,6 +87,15 @@ class AuthController extends StateNotifier<AuthState> {
     }
   }
 
+  /// Reset password for email.
+  Future<void> resetPassword(String email) async {
+    try {
+      await _repository.resetPasswordForEmail(email);
+    } catch (e) {
+      throw Exception('Failed to send reset link: $e');
+    }
+  }
+
   /// Reset to unauthenticated (e.g., after dismissing an error).
   void resetToUnauthenticated() {
     state = const AuthUnauthenticated();

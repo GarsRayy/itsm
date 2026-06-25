@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_gradients.dart';
@@ -13,6 +14,7 @@ import '../../auth/controllers/auth_state.dart';
 import '../../tickets/controllers/ticket_controller.dart';
 import '../../tickets/screens/widgets/ticket_card.dart';
 import '../../../core/widgets/shimmer_ticket_card.dart';
+import '../../../core/utils/snackbar_utils.dart';
 
 /// Executor Dashboard
 class ExecutorDashboardScreen extends ConsumerWidget {
@@ -120,14 +122,22 @@ class ExecutorDashboardScreen extends ConsumerWidget {
                                     label: 'Update Status',
                                     icon: Icons.update_rounded,
                                     color: AppColors.accentBlue,
+                                    onTap: () {
+                                      if (ticketsState.tickets.isNotEmpty) {
+                                        context.push('/ticket/${ticketsState.tickets.first.id}');
+                                      } else {
+                                        SnackbarUtils.showInfo(context, 'No tickets to update.');
+                                      }
+                                    },
                                   ),
                                 ),
                                 const SizedBox(width: AppSizes.spacing12),
                                 Expanded(
                                   child: _QuickAction(
-                                    label: 'GitLab Issue',
-                                    icon: Icons.bug_report_outlined,
+                                    label: 'Service Catalog',
+                                    icon: Icons.menu_book_rounded,
                                     color: AppColors.accentPurple,
+                                    onTap: () => context.push('/service-catalog'),
                                   ),
                                 ),
                               ],
@@ -247,7 +257,7 @@ class ExecutorDashboardScreen extends ConsumerWidget {
         return TicketCard(
               ticket: ticket,
               onTap: () {
-                // Navigate to detail in Phase 4
+                context.push('/ticket/${ticket.id}');
               },
             )
             .animate(delay: (700 + (index * 100)).ms)
@@ -263,19 +273,19 @@ class _QuickAction extends StatelessWidget {
     required this.label,
     required this.icon,
     required this.color,
+    this.onTap,
   });
 
   final String label;
   final IconData icon;
   final Color color;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return GlassmorphicContainer(
       padding: const EdgeInsets.all(AppSizes.spacing16),
-      onTap: () {
-        // TODO: Implement in Phase 4/5
-      },
+      onTap: onTap,
       child: Column(
         children: [
           Icon(icon, color: color, size: AppSizes.iconLarge),

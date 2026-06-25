@@ -27,17 +27,31 @@ class TicketCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: ID and Date
+          // Header: Ticket Code, Source and Date
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                ticket.id,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textHint,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.5,
-                ),
+              Row(
+                children: [
+                  Icon(
+                    ticket.source == 'whatsapp'
+                        ? Icons.chat_rounded
+                        : Icons.computer_rounded,
+                    size: AppSizes.iconSmall - 2,
+                    color: ticket.source == 'whatsapp'
+                        ? AppColors.accentGreen
+                        : AppColors.accentBlue,
+                  ),
+                  const SizedBox(width: AppSizes.spacing4),
+                  Text(
+                    ticket.ticketCode,
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textHint,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
               ),
               Text(
                 _formatTimeAgo(ticket.createdAt),

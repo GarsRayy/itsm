@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_gradients.dart';
@@ -29,6 +30,13 @@ class LeaderDashboardScreen extends ConsumerWidget {
     final ticketsState = ref.watch(ticketControllerProvider);
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => context.push('/create-ticket'),
+        backgroundColor: AppColors.primaryYellow,
+        foregroundColor: AppColors.textOnPrimary,
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('New Ticket'),
+      ),
       body: AnimatedGradientBackground(
         child: SafeArea(
           child: Padding(
@@ -110,6 +118,55 @@ class LeaderDashboardScreen extends ConsumerWidget {
                             .animate(delay: 200.ms)
                             .fadeIn()
                             .slideX(begin: -0.2, end: 0),
+
+                        const SizedBox(height: AppSizes.spacing32),
+
+                        // Quick Actions
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GlassmorphicContainer(
+                                padding: const EdgeInsets.all(AppSizes.spacing16),
+                                onTap: () => context.push('/users'),
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.group_add_rounded, color: AppColors.primaryYellow, size: AppSizes.iconLarge),
+                                    const SizedBox(height: AppSizes.spacing8),
+                                    Text('Manage Users', style: AppTextStyles.labelMedium.copyWith(color: AppColors.primaryYellow)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: AppSizes.spacing12),
+                            Expanded(
+                              child: GlassmorphicContainer(
+                                padding: const EdgeInsets.all(AppSizes.spacing16),
+                                onTap: () {},
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.assignment_ind_rounded, color: AppColors.accentBlue, size: AppSizes.iconLarge),
+                                    const SizedBox(height: AppSizes.spacing8),
+                                    Text('Assign Ticket', style: AppTextStyles.labelMedium.copyWith(color: AppColors.accentBlue)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: AppSizes.spacing12),
+                            Expanded(
+                              child: GlassmorphicContainer(
+                                padding: const EdgeInsets.all(AppSizes.spacing16),
+                                onTap: () => context.push('/service-catalog'),
+                                child: Column(
+                                  children: [
+                                    const Icon(Icons.menu_book_rounded, color: AppColors.accentPurple, size: AppSizes.iconLarge),
+                                    const SizedBox(height: AppSizes.spacing8),
+                                    Text('Catalog', style: AppTextStyles.labelMedium.copyWith(color: AppColors.accentPurple)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ).animate(delay: 300.ms).fadeIn().slideY(begin: 0.1, end: 0),
 
                         const SizedBox(height: AppSizes.spacing32),
 
@@ -257,7 +314,7 @@ class LeaderDashboardScreen extends ConsumerWidget {
         return TicketCard(
               ticket: ticket,
               onTap: () {
-                // Navigate to detail in Phase 4
+                context.push('/ticket/${ticket.id}');
               },
             )
             .animate(delay: (700 + (index * 100)).ms)

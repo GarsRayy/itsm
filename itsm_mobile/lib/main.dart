@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app.dart';
+import 'core/network/supabase_client.dart';
 
 /// Application entrypoint.
 ///
@@ -25,8 +26,8 @@ Future<void> main() async {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
-  // TODO: Uncomment when Supabase credentials are configured.
-  // await SupabaseConfig.initialize();
+  // Supabase credentials are configured.
+  await SupabaseConfig.initialize();
 
   runApp(
     const ProviderScope(

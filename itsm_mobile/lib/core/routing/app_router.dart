@@ -9,6 +9,10 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/splash_screen.dart';
 import '../../features/dashboard/screens/leader_dashboard_screen.dart';
 import '../../features/dashboard/screens/executor_dashboard_screen.dart';
+import '../../features/users/screens/user_management_screen.dart';
+import '../../features/tickets/screens/create_ticket_screen.dart';
+import '../../features/tickets/screens/ticket_detail_screen.dart';
+import '../../features/tickets/screens/service_catalog_screen.dart';
 
 // ──────────────────────────────────────────────
 // Route Path Constants
@@ -20,6 +24,10 @@ abstract final class RoutePaths {
   static const String login = '/login';
   static const String leaderDashboard = '/leader';
   static const String executorDashboard = '/executor';
+  static const String userManagement = '/users';
+  static const String createTicket = '/create-ticket';
+  static const String ticketDetail = '/ticket/:id';
+  static const String serviceCatalog = '/service-catalog';
 }
 
 // ──────────────────────────────────────────────
@@ -88,6 +96,81 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         pageBuilder: (context, state) => CustomTransitionPage(
           key: state.pageKey,
           child: const ExecutorDashboardScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.userManagement,
+        name: 'userManagement',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const UserManagementScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.createTicket,
+        name: 'createTicket',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const CreateTicketScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeInOut,
+              ),
+              child: child,
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      GoRoute(
+        path: RoutePaths.ticketDetail,
+        name: 'ticketDetail',
+        pageBuilder: (context, state) {
+          final ticketId = state.pathParameters['id']!;
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: TicketDetailScreen(ticketId: ticketId),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.easeInOut,
+                ),
+                child: child,
+              );
+            },
+            transitionDuration: const Duration(milliseconds: 400),
+          );
+        },
+      ),
+      GoRoute(
+        path: RoutePaths.serviceCatalog,
+        name: 'serviceCatalog',
+        pageBuilder: (context, state) => CustomTransitionPage(
+          key: state.pageKey,
+          child: const ServiceCatalogScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
               opacity: CurvedAnimation(

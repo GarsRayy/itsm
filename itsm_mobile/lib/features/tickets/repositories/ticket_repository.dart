@@ -41,7 +41,34 @@ class TicketRepository {
   Future<void> updateTicketStatus(String ticketId, TicketStatus newStatus) async {
     await _client
         .from('tickets')
-        .update({'status': newStatus.name})
+        .update({
+          'status': newStatus.name,
+          if (newStatus == TicketStatus.inProgress)
+            'updated_at': DateTime.now().toIso8601String(),
+        })
+        .eq('id', ticketId);
+  }
+
+  /// Resolve a ticket with a resolution note.
+  Future<void> resolveTicket(String ticketId, String resolutionNote) async {
+    await _client
+        .from('tickets')
+        .update({
+          'status': TicketStatus.resolved.name,
+          'resolution_note': resolutionNote,
+          'resolved_at': DateTime.now().toIso8601String(),
+        })
+        .eq('id', ticketId);
+  }
+
+  /// Assign a ticket to a team member.
+  Future<void> assignTicket(String ticketId, String assigneeName) async {
+    await _client
+        .from('tickets')
+        .update({
+          'assignee_name': assigneeName,
+          'status': TicketStatus.inProgress.name,
+        })
         .eq('id', ticketId);
   }
 }

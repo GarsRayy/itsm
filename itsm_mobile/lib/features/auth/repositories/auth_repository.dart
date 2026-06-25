@@ -45,6 +45,11 @@ class AuthRepository {
     await _auth.signOut();
   }
 
+  /// Send password reset link to email.
+  Future<void> resetPasswordForEmail(String email) async {
+    await _auth.resetPasswordForEmail(email);
+  }
+
   /// Get the current session, if one exists.
   Session? get currentSession => _auth.currentSession;
 

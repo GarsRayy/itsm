@@ -214,14 +214,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
             const SizedBox(height: AppSizes.spacing12),
 
-            // Forgot password link
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: isLoading ? null : () {
-                  // TODO: Implement forgot password flow
-                },
-                child: Text(
+              // Forgot password link
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: isLoading ? null : _showForgotPasswordDialog,
+                  child: Text(
                   AppStrings.forgotPassword,
                   style: AppTextStyles.bodySmall.copyWith(
                     color: AppColors.primaryYellow,
@@ -246,6 +244,70 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         .animate(delay: 400.ms)
         .fadeIn(duration: 500.ms)
         .slideY(begin: 0.15, end: 0, curve: Curves.easeOutCubic);
+  }
+
+  void _showForgotPasswordDialog() {
+    final emailCtrl = TextEditingController(text: _emailController.text);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColors.surfaceDark,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusLarge),
+          ),
+          title: Text('Reset Password', style: AppTextStyles.titleLarge),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Enter your email address to receive a password reset link.',
+                style: AppTextStyles.bodyMedium,
+              ),
+              const SizedBox(height: AppSizes.spacing16),
+              TextField(
+                controller: emailCtrl,
+                keyboardType: TextInputType.emailAddress,
+                style: AppTextStyles.bodyLarge,
+                decoration: const InputDecoration(
+                  hintText: AppStrings.emailHint,
+                  prefixIcon: Icon(Icons.email_outlined, color: AppColors.textHint),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel', style: AppTextStyles.bodyMedium),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final email = emailCtrl.text.trim();
+                if (email.isEmpty) return;
+                Navigator.pop(context); // close dialog
+
+                try {
+                  await ref.read(authControllerProvider.notifier).resetPassword(email);
+                  if (context.mounted) {
+                    SnackbarUtils.showSuccess(context, 'Password reset link sent to $email');
+                  }
+                } catch (e) {
+                  if (context.mounted) {
+                    SnackbarUtils.showError(context, 'Failed to send reset link.');
+                  }
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryYellow,
+                foregroundColor: AppColors.textPrimary,
+              ),
+              child: const Text('Send Link'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // ──────────────────────────────────────────────
