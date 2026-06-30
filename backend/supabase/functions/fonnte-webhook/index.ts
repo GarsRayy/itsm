@@ -48,9 +48,14 @@ async function getSession(supabase: SupabaseClient, phone: string): Promise<WaSe
 }
 
 async function upsertSession(supabase: SupabaseClient, session: Partial<WaSession> & { phone_number: string }): Promise<void> {
-  await supabase
+  const { error } = await supabase
     .from('wa_sessions')
     .upsert({ ...session, updated_at: new Date().toISOString() }, { onConflict: 'phone_number' })
+  
+  if (error) {
+    console.error('UPSERT ERROR:', error)
+    throw new Error(`Failed to update session: ${error.message}`)
+  }
 }
 
 async function clearSession(supabase: SupabaseClient, phone: string): Promise<void> {
